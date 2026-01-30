@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import Column, Integer, String, DateTime
 
 
-class Tasks(BASE):
+class Tasks(BASE):  # pylint: disable=too-few-public-methods
     """a SQL alchemy data model for the tasks table"""
 
     __tablename__ = "tasks"
@@ -18,7 +18,7 @@ class Tasks(BASE):
     due_date = Column(DateTime, default=datetime.utcnow)
 
 
-class TaskPydant(BaseModel):
+class TaskPydant(BaseModel):  # pylint: disable=too-few-public-methods
     """a pydantic data model for a task, for validation"""
 
     title: str = Field(description="Title of the task")
