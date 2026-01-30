@@ -37,7 +37,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
       - name: Analysing the code with pylint
         run: |
-          pylint --disable=R0801 W0511 $(git ls-files '*.py')
+          pylint --disable=R0801,W0511 $(git ls-files '*.py')
       - name: Test with pytest
         run: |
           pytest
