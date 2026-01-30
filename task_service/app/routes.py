@@ -1,6 +1,6 @@
 """controller equivalent, all http routing belongs here"""
-from app.db import engine, SESSION_LOCAL, get_db
-from app.models import BASE, TaskPydant, Tasks
+from app.db import get_db
+from app.models import TaskPydant, Tasks
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -38,10 +38,10 @@ def get_tasks(db: Session = Depends(get_db)):  # type: ignore[assignment]
     """return list of tasks"""
     return db.query(Tasks).all()
 
-# TODO: Fetch tasks by {status} and {deadline}
+# TODO Fetch tasks by {status} and {deadline}
 
 # UPDATE or PATCH
-# TODO: update task {status}
+# TODO update task {status}
 
 # DELETE
-# TODO: delete a task using {ID}?
+# TODO delete a task using {ID}?

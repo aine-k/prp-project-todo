@@ -19,6 +19,6 @@ def init_test_db():
     session.close()
 
 
-def test_db_exists(init_test_db):
+def test_db_exists(init_test_db):  # pylint: disable=redefined-outer-name
     """check that the db exists"""
     assert init_test_db.execute(text("SELECT 1")).scalar() == 1
