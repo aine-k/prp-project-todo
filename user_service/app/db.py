@@ -4,8 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from db_config import SQLALCHEMY_DATABASE_URI
+
 # supposed to be inmem, it's not
-SQLALCHEMY_DATABASE_URI = "sqlite:///./tasks.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URI, connect_args={"check_same_thread": False}

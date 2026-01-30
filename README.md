@@ -1,59 +1,133 @@
 # prp-project-todo
 
-Features
-User Service Features
-User registration and authentication
-User profile management
-API authentication using JWT
+Project: Task Management system
+Objective: Build a production-ready FastAPI application with an OOP-based
+architecture, two microservices, and a fully tested codebase.
+**Overview**
+**Tech Stack**
 
-Task Service Features
-Create, update, and delete tasks
-Assign tasks to users
-Fetch tasks by status and deadline
+    FastAPI -- API framework
 
-Communication Between Services
-The Task Service calls the User Service to validate user ownership of tasks.
-The User Service sends an event when a new user is created.
+    SQLAlchemy -- ORM for database interactions
 
-Implementing Microservices
-User Service (user_service/app/main.py)
-from fastapi import FastAPI
-from app.routes import router
+    PostgreSQL -- Relational database
 
-app = FastAPI(title="User Service")
-app.include_router(router)
+    Redis -- For caching and message queue
 
-User Model (user_service/app/models.py)
+    Docker + Docker Compose -- For containerization
 
-from sqlalchemy import Column, Integer, String
-from app.db import Base
+    Pytest + Hypothesis -- Testing
 
-class User(Base):
-__tablename__ = "users"
+    GitHub Actions -- CI/CD pipeline
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+**Microservices**
 
-Task Service (task_service/app/models.py)
+    User Service (Handles user accounts, authentication, and profile management)
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from datetime import datetime
-from app.db import Base
+    Task Service (Manages tasks, statuses, and deadlines)
 
-class Task(Base):
-__tablename__ = "tasks"
+The two services communicate via HTTP (REST API) and event-driven messaging
+using Redis.
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    status = Column(String, default="pending")
-    due_date = Column(DateTime, default=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey("users.id"))
+Directory Structure
 
-Testing Strategy
-Final Deliverables
-Two microservices (User Service and Task Service)
-OOP-based architecture with FastAPI
-Fully tested with unit, integration, and property-based tests
-Dockerised for production
-CI/CD pipeline for automated testing and deployment
+    taskflow/
+    │── user_service/
+    │   ├── app/
+    │   │   ├── models.py  # SQLAlchemy models
+    │   │   ├── services.py  # Business logic (OOP-style services)
+    │   │   ├── routes.py  # FastAPI route definitions
+    │   │   ├── db.py  # Database session setup
+    │   │   ├── main.py  # FastAPI entry point
+    │   ├── tests/
+    │   │   ├── test_routes.py  # API route tests
+    │   │   ├── test_services.py  # Unit tests for business logic
+    │   ├── Dockerfile
+    │   ├── requirements.txt
+    │
+    │── task_service/
+    │   ├── app/
+    │   │   ├── models.py
+    │   │   ├── services.py
+    │   │   ├── routes.py
+    │   │   ├── db.py
+    │   │   ├── main.py
+    │   ├── tests/
+    │   │   ├── test_routes.py
+    │   │   ├── test_services.py
+    │   ├── Dockerfile
+    │   ├── requirements.txt
+    │
+    │── docker-compose.yml
+    │── README.md
+    │── .github/workflows/ci.yml  # CI/CD workflow
+
+**_Features_**
+
+**User Service Features**
+
+* User registration and authentication
+* User profile management
+* API authentication using JWT
+
+**Task Service Features**
+
+* Create, update, and delete tasks
+* Assign tasks to users
+* Fetch tasks by status and deadline
+
+**Communication Between Services**
+
+* The Task Service calls the User Service to validate user ownership of tasks.
+* The User Service sends an event when a new user is created.
+
+**Implementing Microservices**
+
+_User Service (user_service/app/main.py)_
+
+    from fastapi import FastAPI
+    from app.routes import router
+    app = FastAPI(title="User Service")
+    app.include_router(router)
+
+_User Model (user_service/app/models.py)_
+
+        from sqlalchemy import Column, Integer, String
+        from app.db import Base
+    
+    class User(Base):
+    __tablename__ = "users"
+    
+        id = Column(Integer, primary_key=True, index=True)
+        name = Column(String, nullable=False)
+        email = Column(String, unique=True, nullable=False)
+
+_Task Service (task_service/app/models.py)_
+
+    from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+    from datetime import datetime
+    from app.db import Base
+    
+    class Task(Base):
+    __tablename__ = "tasks"
+    
+        id = Column(Integer, primary_key=True, index=True)
+        title = Column(String, nullable=False)
+        status = Column(String, default="pending")
+        due_date = Column(DateTime, default=datetime.utcnow)
+        user_id = Column(Integer, ForeignKey("users.id"))
+
+Testing Strategy:
+
+* Fully tested 100% cov
+* unit
+* integration
+* property-based tests
+
+Final Deliverables:
+
+* Two microservices (User Service and Task Service)
+* OOP-based architecture with FastAPI
+
+* Dockerised for production
+* CI/CD pipeline for automated testing and deployment
