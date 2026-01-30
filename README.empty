@@ -4,4 +4,4 @@ some tutorials out of date on this
 main = app
 db = repo
 
-
+running uvicorn dev server: fastapi dev .\task_service\app\main.py - just task microservice
