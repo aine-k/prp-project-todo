@@ -1,0 +1,4 @@
+[flake8]
+exclude = .git,__pycache__,.venv,*.empty,*.csv,*.txt,.gitignore,README.md
+max-complexity = 15
+max-line-length = 80

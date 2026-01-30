@@ -1,0 +1,7 @@
+make sure to use models etc from pydantic v2 as fastapi no longer supports v1
+some tutorials out of date on this
+
+main = app
+db = repo
+
+

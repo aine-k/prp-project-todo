@@ -1,0 +1,7 @@
+[tool.black]
+line-length = 79
+target-version = ['py313']
+
+[tool.pylint]
+ignore = [ ".venv", ".benchmarks", ".gitinore" ]
+py-version = "3.12"
