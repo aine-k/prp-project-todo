@@ -1,4 +1,5 @@
 """controller equivalent, all http routing belongs here"""
+from app import services
 from app.db import get_db
 from app.models import TaskPydant, Tasks
 from fastapi import APIRouter, Depends
@@ -36,7 +37,7 @@ def create_task(task: TaskPydant,
 @router.get("/tasks")
 def get_tasks(db: Session = Depends(get_db)):  # type: ignore[assignment]
     """return list of tasks"""
-    return db.query(Tasks).all()
+    return services.get_all_tasks(db)
 
 # TODO Fetch tasks by {status} and {deadline}
 
