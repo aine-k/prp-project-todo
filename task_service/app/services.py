@@ -8,3 +8,8 @@ from sqlalchemy.orm import Session
 def get_all_tasks(db: Session) -> list[type[Tasks]]:
     """function to get all tasks as a list"""
     return db.query(Tasks).all()
+
+
+def get_tasks_by_status(db, status):
+    """grab tasks by status from db"""
+    return db.query(Tasks).filter(Tasks.status == status).all()

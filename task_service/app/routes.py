@@ -1,7 +1,8 @@
 """controller equivalent, all http routing belongs here"""
 from app import services
 from app.db import get_db
-from app.models import TaskPydant, Tasks
+from app.models import Tasks
+from app.schemas import TaskPydant
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -35,11 +36,18 @@ def create_task(task: TaskPydant,
 
 # READ
 @router.get("/tasks")
-def get_tasks(db: Session = Depends(get_db)):  # type: ignore[assignment]
+def get_all_tasks(db: Session = Depends(get_db)):  # type: ignore[assignment]
     """return list of tasks"""
     return services.get_all_tasks(db)
 
-# TODO Fetch tasks by {status} and {deadline}
+
+@router.get("/tasks/{status}")
+def get_tasks(status: str, db: Session = Depends(get_db)):
+    """Fetch tasks by {status} and {deadline}"""
+    if status:
+        return services.get_tasks_by_status(db, status)
+    else:
+        return {"message": "Tasks not found!"}
 
 # UPDATE or PATCH
 # TODO update task {status}

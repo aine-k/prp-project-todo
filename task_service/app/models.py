@@ -1,13 +1,12 @@
-"""dto/models"""
+"""SQLalchemy models for the tasks table definitions"""
 
 from datetime import datetime
 
-from app.db import BASE
-from pydantic import BaseModel, Field
+from app.db import Base
 from sqlalchemy import Column, Integer, String, DateTime
 
 
-class Tasks(BASE):  # pylint: disable=too-few-public-methods
+class Tasks(Base):  # pylint: disable=too-few-public-methods
     """a SQL alchemy data model for the tasks table"""
 
     __tablename__ = "tasks"
@@ -16,13 +15,3 @@ class Tasks(BASE):  # pylint: disable=too-few-public-methods
     title = Column(String, nullable=False)
     status = Column(String, default="pending")
     due_date = Column(DateTime, default=datetime.utcnow)
-
-
-class TaskPydant(BaseModel):  # pylint: disable=too-few-public-methods
-    """a pydantic data model for a task, for validation"""
-
-    title: str = Field(description="Title of the task")
-    status: str = Field("pending")
-    due_date: datetime = Field(
-        default_factory=datetime.now, description="When the task is due"
-    )
