@@ -1,6 +1,5 @@
 """main part of task service, application entrypoint"""
 
-from app.db import engine
 from app.routes import router
 from fastapi import FastAPI
 
