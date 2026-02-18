@@ -1,4 +1,4 @@
-"""main part of task service, entrypoint"""
+"""main part of task service, application entrypoint"""
 
 from app.db import engine
 from app.routes import router

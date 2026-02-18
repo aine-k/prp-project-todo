@@ -1,14 +1,21 @@
 """tests for the db module of the task service"""
+import os
+
 import pytest
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, StaticPool, text
 from sqlalchemy.orm import declarative_base, sessionmaker
+
+# load env variables for testing environment
+load_dotenv(override=True)
+DATABASE_URI = os.getenv('TEST_DATABASE_URI')
 
 
 @pytest.fixture
 def init_test_db():
     """initialise the database for testing"""
     engine = create_engine(
-        "sqlite:///:memory:",
+        DATABASE_URI,
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )

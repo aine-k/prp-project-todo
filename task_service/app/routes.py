@@ -46,8 +46,8 @@ def get_tasks(status: str, db: Session = Depends(get_db)):
     """Fetch tasks by {status} and {deadline}"""
     if status:
         return services.get_tasks_by_status(db, status)
-    else:
-        return {"message": "Tasks not found!"}
+    
+    return {"message": "Tasks not found!"}
 
 # UPDATE or PATCH
 # TODO update task {status}

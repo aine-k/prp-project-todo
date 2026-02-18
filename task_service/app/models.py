@@ -1,6 +1,6 @@
 """SQLalchemy models for the tasks table definitions"""
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from app.db import Base
 from sqlalchemy import Column, Integer, String, DateTime
@@ -14,4 +14,4 @@ class Tasks(Base):  # pylint: disable=too-few-public-methods
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     status = Column(String, default="pending")
-    due_date = Column(DateTime, default=datetime.utcnow)
+    due_date = Column(DateTime, default=datetime.now(UTC))
