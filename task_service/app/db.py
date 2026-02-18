@@ -25,13 +25,11 @@ SESSION_LOCAL = sessionmaker(
 
 class Base(DeclarativeBase):  # pylint: disable=too-few-public-methods
     """SQLalchemy 2.x style Base class"""
+    __abstract__ = True
 
 
 def get_db_session():
     """dependency function to be used with FastAPI 'Depends' later in routes.
     is a generator. initialise a database session"""
-    try:
-        db_session = SESSION_LOCAL()
+    with SESSION_LOCAL() as db_session:
         yield db_session
-    finally:
-        db_session.close()

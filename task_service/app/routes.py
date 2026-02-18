@@ -4,8 +4,8 @@ from typing import Annotated
 from app import services
 from app.db import get_db_session
 from app.models import Tasks
-from app.schemas import TaskPydant
-from fastapi import APIRouter, Depends
+from app.schemas import TaskPydant, TaskUpdate
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 # create router object to import in main
@@ -20,7 +20,7 @@ def hello_world():
 
 
 # CREATE
-@router.post("/new_task")
+@router.post("/new_task", status_code=status.HTTP_201_CREATED)
 def create_task(task: TaskPydant,
                 db: Annotated[Session, Depends(
                     get_db_session)]):  # type: ignore[assignment]
@@ -31,30 +31,40 @@ def create_task(task: TaskPydant,
     db.add(task_model)
     db.commit()
 
-    return {
-        "message": "Task created successfully!",
-        "task": str(task_model.title),
-    }
+    return task  # need to config response models later
 
 
 # READ
-@router.get("/tasks")
+@router.get("/tasks", status_code=status.HTTP_200_OK)
 def get_all_tasks(
         db: Annotated[Session, Depends(get_db_session)]):
-    """return list of tasks"""
+    """return all tasks in the tasks database"""
     return services.get_all_tasks(db)
 
 
-@router.get("/tasks/{status}")
-def get_tasks(status: str,
+@router.get("/tasks/{task_status}", status_code=status.HTTP_200_OK)
+def get_tasks(task_status: str,
               db: Annotated[Session, Depends(get_db_session)]):
-    """Fetch tasks by {status} and {deadline}"""
-    if status:
-        return services.get_tasks_by_status(db, status)
+    """Fetch tasks by {status} and {deadline} from tasks database"""
+    if task_status:
+        return services.get_tasks_by_status(db, task_status)
     return [{"message": "Tasks not found!"}]
 
-# UPDATE or PATCH
-# TODO update task {status}
+
+# UPDATE
+@router.patch("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+def update_task(task_id: int, update: TaskUpdate,
+                db: Annotated[Session, Depends(get_db_session)]):
+    """update task {task_status}, use {task_id} to identify"""
+    if services.update_task_status(db, task_id, update):
+        return {"message": f"Task {task_id} updated!"}
+    return {"message": "Task not found!"}
+
 
 # DELETE
-# TODO delete a task using {ID}?
+@router.delete("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+def delete_task(task_id: int, db: Annotated[Session, Depends(get_db_session)]):
+    """delete a task by {task_id}"""
+    if services.delete_task(db, task_id):
+        return {"message": f"Task {task_id} deleted!"}
+    return {"message": f"Task {task_id} not found!"}

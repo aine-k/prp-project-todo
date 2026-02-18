@@ -12,3 +12,9 @@ class TaskPydant(BaseModel):  # pylint: disable=too-few-public-methods
     due_date: datetime = Field(
         default_factory=datetime.now, description="When the task is due"
     )
+
+
+class TaskUpdate(BaseModel):
+    """task model for updating the task status by id"""
+    task_id: int = Field()
+    task_status: str = Field()
