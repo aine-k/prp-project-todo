@@ -1,5 +1,6 @@
 """business logic layer"""
 from app.models import Tasks
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 
@@ -7,9 +8,13 @@ from sqlalchemy.orm import Session
 
 def get_all_tasks(db: Session) -> list[type[Tasks]]:
     """function to get all tasks as a list"""
-    return db.query(Tasks).all()
+    stmt = select(Tasks)
+    result = db.execute(stmt)
+    return list(result.scalars().all())  # Get list of ORM objects w/ scalars
 
 
-def get_tasks_by_status(db, status):
+def get_tasks_by_status(db, status) -> list[type[Tasks]]:
     """grab tasks by status from db"""
-    return db.query(Tasks).filter(Tasks.status == status).all()
+    stmt = select(Tasks).where(Tasks.status == status)
+    result = db.execute(stmt)
+    return list(result.scalars().all())
