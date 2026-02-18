@@ -3,7 +3,8 @@
 from datetime import datetime, UTC
 
 from app.db import Base
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import DateTime, String, Integer
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Tasks(Base):  # pylint: disable=too-few-public-methods
@@ -11,7 +12,9 @@ class Tasks(Base):  # pylint: disable=too-few-public-methods
 
     __tablename__ = "tasks"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    status = Column(String, default="pending")
-    due_date = Column(DateTime, default=datetime.now(UTC))
+    # move cols to mapped class for sqla 2.x
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    status: Mapped[str] = mapped_column(String, default="pending")
+    due_date: Mapped[DateTime] = mapped_column(String,
+                                               default=datetime.now(UTC))

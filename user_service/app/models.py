@@ -1,10 +1,10 @@
 """define object models for dtos"""
 
-from app.db import BASE
+from app.db import Base
 from sqlalchemy import Column, Integer, String
 
 
-class User(BASE):  # pylint: disable=too-few-public-methods
+class User(Base):  # pylint: disable=too-few-public-methods
     """table definition for sql alchemy"""
 
     __tablename__ = "users"
