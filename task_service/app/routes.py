@@ -1,12 +1,14 @@
 """controller equivalent, all http routing belongs here"""
 from typing import Annotated
 
-from app import services
-from app.db import get_db_session
-from app.models import Tasks
-from app.schemas import TaskPydant, TaskUpdate
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+
+from .db import get_db_session
+from .models import Tasks
+from .schemas import TaskPydant, TaskUpdate
+from .services import fetch_all_tasks, fetch_tasks_by_status, \
+    update_task_status, delete_task_by_id
 
 # create router object to import in main
 router = APIRouter()
@@ -39,7 +41,7 @@ def create_task(task: TaskPydant,
 def get_all_tasks(
         db: Annotated[Session, Depends(get_db_session)]):
     """return all tasks in the tasks database"""
-    return services.get_all_tasks(db)
+    return fetch_all_tasks(db)
 
 
 @router.get("/tasks/{task_status}", status_code=status.HTTP_200_OK)
@@ -47,7 +49,7 @@ def get_tasks(task_status: str,
               db: Annotated[Session, Depends(get_db_session)]):
     """Fetch tasks by {status} and {deadline} from tasks database"""
     if task_status:
-        return services.get_tasks_by_status(db, task_status)
+        return fetch_tasks_by_status(db, task_status)
     return [{"message": "Tasks not found!"}]
 
 
@@ -56,7 +58,7 @@ def get_tasks(task_status: str,
 def update_task(task_id: int, update: TaskUpdate,
                 db: Annotated[Session, Depends(get_db_session)]):
     """update task {task_status}, use {task_id} to identify"""
-    if services.update_task_status(db, task_id, update):
+    if update_task_status(db, task_id, update):
         return {"message": f"Task {task_id} updated!"}
     return {"message": "Task not found!"}
 
@@ -65,6 +67,6 @@ def update_task(task_id: int, update: TaskUpdate,
 @router.delete("/tasks/{task_id}", status_code=status.HTTP_200_OK)
 def delete_task(task_id: int, db: Annotated[Session, Depends(get_db_session)]):
     """delete a task by {task_id}"""
-    if services.delete_task(db, task_id):
+    if delete_task_by_id(db, task_id):
         return {"message": f"Task {task_id} deleted!"}
     return {"message": f"Task {task_id} not found!"}

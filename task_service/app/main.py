@@ -1,7 +1,8 @@
 """main part of task service, application entrypoint"""
 
-from app.routes import router
 from fastapi import FastAPI
+
+from .routes import router
 
 app = FastAPI(title="Task Service")
 

@@ -2,9 +2,10 @@
 
 from datetime import datetime, UTC
 
-from app.db import Base
 from sqlalchemy import DateTime, String, Integer
 from sqlalchemy.orm import Mapped, mapped_column
+
+from .db import Base
 
 
 class Tasks(Base):  # pylint: disable=too-few-public-methods

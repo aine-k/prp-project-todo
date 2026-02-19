@@ -2,7 +2,6 @@
 import os
 
 import pytest
-from app.db import get_db_session
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, StaticPool, text
 from sqlalchemy.orm import sessionmaker

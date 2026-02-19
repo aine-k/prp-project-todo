@@ -1,26 +1,27 @@
 """business logic layer"""
-from app.models import Tasks
 from fastapi import HTTPException
 from sqlalchemy import select, delete
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from .models import Tasks
 
-def get_all_tasks(db: Session) -> list[type[Tasks]]:
+
+def fetch_all_tasks(db: Session) -> list[type[Tasks]]:
     """function to get all tasks as a list"""
     stmt = select(Tasks)
     result = db.execute(stmt)
     return list(result.scalars().all())  # Get list of ORM objects w/ scalars
 
 
-def get_tasks_by_status(db, status) -> list[type[Tasks]]:
+def fetch_tasks_by_status(db, status) -> list[type[Tasks]]:
     """grab tasks by status from db"""
     stmt = select(Tasks).where(Tasks.status == status)
     result = db.execute(stmt)
     return list(result.scalars().all())
 
 
-def delete_task(db, task_id) -> bool:
+def delete_task_by_id(db, task_id) -> bool:
     """function to delete a task by id"""
     try:
         stmt = select(Tasks).where(Tasks.id == task_id)
