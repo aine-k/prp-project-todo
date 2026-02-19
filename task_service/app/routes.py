@@ -1,60 +1,40 @@
 """controller equivalent, all http routing belongs here"""
-from typing import Annotated
+from datetime import datetime
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from .db import get_db_session
-from .models import Tasks
 from .schemas import TaskPydant, TaskUpdate
-from .services import fetch_all_tasks, fetch_tasks_by_status, \
-    update_task_status, delete_task_by_id
+from .services import fetch_tasks_by_status, \
+    update_task_status, delete_task_by_id, create_new_task
 
 # create router object to import in main
 router = APIRouter()
-
-
-# basic, only for set up
-@router.get("/")
-def hello_world():
-    """hello world"""
-    return {"message": "Hello, FastAPI!"}
 
 
 # CREATE
 @router.post("/new_task", status_code=status.HTTP_201_CREATED)
 def create_task(task: TaskPydant,
                 db: Annotated[Session, Depends(
-                    get_db_session)]):  # type: ignore[assignment]
+                    get_db_session)]):
     """create a new task and add to the tasks database"""
-    task_model = Tasks()
-    task_model.title = task.title  # type: ignore[assignment]
-    task_model.status = task.status  # type: ignore[assignment]
-    db.add(task_model)
-    db.commit()
-
-    return task  # need to config response models later
+    return create_new_task(db, task)  # need to config response models later
 
 
 # READ
-@router.get("/tasks", status_code=status.HTTP_200_OK)
-def get_all_tasks(
-        db: Annotated[Session, Depends(get_db_session)]):
-    """return all tasks in the tasks database"""
-    return fetch_all_tasks(db)
-
-
-@router.get("/tasks/{task_status}", status_code=status.HTTP_200_OK)
-def get_tasks(task_status: str,
-              db: Annotated[Session, Depends(get_db_session)]):
-    """Fetch tasks by {status} and {deadline} from tasks database"""
-    if task_status:
-        return fetch_tasks_by_status(db, task_status)
-    return [{"message": "Tasks not found!"}]
+@router.get("/tasks")
+def get_tasks(db: Annotated[Session, Depends(get_db_session)],
+              task_status: Optional[str] = None,
+              due_date: Optional[datetime] = None):
+    """Fetch all tasks or filter by {status} and/or {deadline} from tasks
+    database"""
+    return fetch_tasks_by_status(db, task_status, due_date)
 
 
 # UPDATE
-@router.patch("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+@router.patch("/tasks/{task_id}")
 def update_task(task_id: int, update: TaskUpdate,
                 db: Annotated[Session, Depends(get_db_session)]):
     """update task {task_status}, use {task_id} to identify"""
@@ -64,9 +44,9 @@ def update_task(task_id: int, update: TaskUpdate,
 
 
 # DELETE
-@router.delete("/tasks/{task_id}", status_code=status.HTTP_200_OK)
+@router.delete("/tasks/{task_id}")
 def delete_task(task_id: int, db: Annotated[Session, Depends(get_db_session)]):
-    """delete a task by {task_id}"""
+    """delete a task by its {task_id}"""
     if delete_task_by_id(db, task_id):
         return {"message": f"Task {task_id} deleted!"}
     return {"message": f"Task {task_id} not found!"}
