@@ -33,7 +33,7 @@ def test_db_exists(init_test_db):  # pylint: disable=redefined-outer-name
     assert init_test_db.execute(text("SELECT 1")).scalar() == 1
 
 
-def test_create_and_read(init_test_db):
+def test_create_and_read():
     """create and read a task from the database"""
     # this might be a services test?
     # add one task and assert that it is present in the db
